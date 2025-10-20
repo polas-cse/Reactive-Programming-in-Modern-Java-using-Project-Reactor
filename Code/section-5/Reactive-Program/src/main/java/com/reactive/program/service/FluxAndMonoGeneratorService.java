@@ -7,13 +7,13 @@ import java.util.List;
 
 public class FluxAndMonoGeneratorService {
 
-    private Flux<String> getFluxNames(){
-        Flux<String> names = Flux.fromIterable(List.of("Polas","Rasel", "Naime", "Jakariya"));
+    public Flux<String> getFluxNames(){
+        Flux<String> names = Flux.fromIterable(List.of("Polas","Rasel", "Naime", "Jakariya")).log();
         return names;
     }
 
-    private Mono<String> getMonoNames(){
-        Mono<String> names = Mono.just("Polas");
+    public Mono<String> getMonoNames(){
+        Mono<String> names = Mono.just("Polas").log();
         return names;
     }
 
@@ -27,11 +27,12 @@ public class FluxAndMonoGeneratorService {
             System.out.println("Name = " + name);
         });
 
-        System.out.println("\nMono");
+        System.out.println("\n\n\nMono");
         Mono<String> monoNames = obj.getMonoNames();
         monoNames.subscribe(name->{
             System.out.println("Name = " + name);
         });
+
     }
 
 }
