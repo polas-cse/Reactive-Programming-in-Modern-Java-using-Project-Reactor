@@ -30,31 +30,51 @@ public class FluxAndMonoGeneratorService {
         return names;
     }
 
+    public Flux<String> getFluxMapFilterName(int size){
+        Flux<String> names = Flux.just("Polas", "Mim", "Naime", "Jakariya", "Jakir")
+                .filter(name-> name.length() >= size)
+                .map(name-> name +" -> " +name.length());
+        return names;
+    }
+
+    public Mono<String> namesMono_map_filter(int stringLength){
+        Mono<String> name = Mono.just("alex")
+                .filter(n-> n.length() >= stringLength)
+                .map(String::toUpperCase);
+        return name;
+    }
+
     public static void main(String[] args) {
 
         FluxAndMonoGeneratorService obj = new FluxAndMonoGeneratorService();
         Flux<String> fluxNames = obj.getFluxNames();
 
-        System.out.println("Flux");
-        fluxNames.subscribe(name->{
-            System.out.println("Name = " + name);
-        });
+//        System.out.println("Flux");
+//        fluxNames.subscribe(name->{
+//            System.out.println("Name = " + name);
+//        });
+//
+//        System.out.println("\n\n\nMono");
+//        Mono<String> monoNames = obj.getMonoNames();
+//        monoNames.subscribe(name->{
+//            System.out.println("Name = " + name);
+//        });
+//
+//        System.out.println("\n\n\nFlux Map");
+//        Flux<String> mapNames = obj.getNamesFluxMap();
+//        mapNames.subscribe(name->{
+//            System.out.println("Name = " + name);
+//        });
+//
+//        System.out.println("\n\n\nFlux Immutable");
+//        Flux<String> mapImmutableNames = obj.getNamesFluxMapImmutable();
+//        mapImmutableNames.subscribe(name->{
+//            System.out.println("Name = " + name);
+//        });
 
-        System.out.println("\n\n\nMono");
-        Mono<String> monoNames = obj.getMonoNames();
-        monoNames.subscribe(name->{
-            System.out.println("Name = " + name);
-        });
-
-        System.out.println("\n\n\nFlux Map");
-        Flux<String> mapNames = obj.getNamesFluxMap();
-        mapNames.subscribe(name->{
-            System.out.println("Name = " + name);
-        });
-
-        System.out.println("\n\n\nFlux Immutable");
-        Flux<String> mapImmutableNames = obj.getNamesFluxMapImmutable();
-        mapImmutableNames.subscribe(name->{
+        System.out.println("\nFlux Filter");
+        Flux<String> filterName = obj.getFluxMapFilterName(5);
+        filterName.subscribe(name->{
             System.out.println("Name = " + name);
         });
 
