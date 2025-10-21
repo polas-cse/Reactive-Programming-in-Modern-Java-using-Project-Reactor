@@ -3,7 +3,9 @@ package com.reactive.program.service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 public class FluxAndMonoGeneratorService {
 
@@ -58,11 +60,35 @@ public class FluxAndMonoGeneratorService {
         return Flux.fromArray(splitName);
     }
 
+    public Flux<String> namesFlux_flat_map_filter_Asynchronous(int stringLength){
+        Flux<String> names = Flux.just("Polas","Nime", "Shopon")
+                .filter(n -> n.length() >= stringLength)
+                .map(String::toUpperCase)
+                .flatMap(this::getSplitWordWithDealy);
+
+        return names;
+    }
+
+    private Flux<String> getSplitWordWithDealy(String name){
+        String[] splitName = name.split("");
+        int delayTime = new Random().nextInt(1000);
+        return Flux.fromArray(splitName).delayElements(Duration.ofMillis(delayTime));
+    }
+
+    public Flux<String> namesFlux_concat_map_filter_Asynchronous(int stringLength){
+        Flux<String> names = Flux.just("Polas","Nime", "Shopon")
+                .filter(n -> n.length() >= stringLength)
+                .map(String::toUpperCase)
+                .concatMap(this::getSplitWordWithDealy);
+
+        return names;
+    }
+
+
     public static void main(String[] args) {
 
         FluxAndMonoGeneratorService obj = new FluxAndMonoGeneratorService();
-        Flux<String> fluxNames = obj.getFluxNames();
-
+//        Flux<String> fluxNames = obj.getFluxNames();
 //        System.out.println("Flux");
 //        fluxNames.subscribe(name->{
 //            System.out.println("Name = " + name);
@@ -92,11 +118,33 @@ public class FluxAndMonoGeneratorService {
 //            System.out.println("Name = " + name);
 //        });
 
-        System.out.println("\nFlux Flat Map");
-        Flux<String> filterFlatMap = obj.namesMono_flat_map_filter(5);
-        filterFlatMap.subscribe(c->{
+//        System.out.println("\nFlux Flat Map");
+//        Flux<String> filterFlatMap = obj.namesMono_flat_map_filter(5);
+//        filterFlatMap.subscribe(c->{
+//            System.out.println("Char = " + c);
+//        });
+
+//        System.out.println("\nFlux Flat Map with dealy");
+//        Flux<String> filterFlatMap = obj.namesFlux_concat_map_filter_Asynchronous(4);
+//        filterFlatMap.doOnNext(c->{
+//            System.out.println("Char = " + c);
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).blockLast();
+
+        System.out.println("\nFlux Concat Map with dealy");
+        Flux<String> filterFlatMap = obj.namesFlux_concat_map_filter_Asynchronous(4);
+        filterFlatMap.doOnNext(c->{
             System.out.println("Char = " + c);
-        });
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).blockLast();
 
     }
 
