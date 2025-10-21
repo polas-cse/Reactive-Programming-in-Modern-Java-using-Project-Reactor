@@ -44,6 +44,20 @@ public class FluxAndMonoGeneratorService {
         return name;
     }
 
+    public Flux<String> namesMono_flat_map_filter(int stringLength){
+       Flux<String> names = Flux.just("Polas")
+               .filter(n -> n.length() >= stringLength)
+               .map(String::toUpperCase)
+               .flatMap(this::getSplitWord);
+
+        return names;
+    }
+
+    private Flux<String> getSplitWord(String name){
+        String[] splitName = name.split("");
+        return Flux.fromArray(splitName);
+    }
+
     public static void main(String[] args) {
 
         FluxAndMonoGeneratorService obj = new FluxAndMonoGeneratorService();
@@ -72,10 +86,16 @@ public class FluxAndMonoGeneratorService {
 //            System.out.println("Name = " + name);
 //        });
 
-        System.out.println("\nFlux Filter");
-        Flux<String> filterName = obj.getFluxMapFilterName(5);
-        filterName.subscribe(name->{
-            System.out.println("Name = " + name);
+//        System.out.println("\nFlux Filter");
+//        Flux<String> filterName = obj.getFluxMapFilterName(5);
+//        filterName.subscribe(name->{
+//            System.out.println("Name = " + name);
+//        });
+
+        System.out.println("\nFlux Flat Map");
+        Flux<String> filterFlatMap = obj.namesMono_flat_map_filter(5);
+        filterFlatMap.subscribe(c->{
+            System.out.println("Char = " + c);
         });
 
     }
