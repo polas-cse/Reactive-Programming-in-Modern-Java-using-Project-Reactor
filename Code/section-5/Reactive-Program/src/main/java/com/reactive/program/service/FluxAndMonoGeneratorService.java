@@ -24,6 +24,12 @@ public class FluxAndMonoGeneratorService {
         return names;
     }
 
+    public Flux<String> getNamesFluxMapImmutable(){
+        Flux<String> names = Flux.just("Polas", "Rasel").log();
+        names.map(String::toUpperCase);
+        return names;
+    }
+
     public static void main(String[] args) {
 
         FluxAndMonoGeneratorService obj = new FluxAndMonoGeneratorService();
@@ -43,6 +49,12 @@ public class FluxAndMonoGeneratorService {
         System.out.println("\n\n\nFlux Map");
         Flux<String> mapNames = obj.getNamesFluxMap();
         mapNames.subscribe(name->{
+            System.out.println("Name = " + name);
+        });
+
+        System.out.println("\n\n\nFlux Immutable");
+        Flux<String> mapImmutableNames = obj.getNamesFluxMapImmutable();
+        mapImmutableNames.subscribe(name->{
             System.out.println("Name = " + name);
         });
 
