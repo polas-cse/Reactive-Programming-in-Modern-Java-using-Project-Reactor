@@ -76,12 +76,24 @@ public class FluxAndMonoGeneratorService {
     }
 
     public Flux<String> namesFlux_concat_map_filter_Asynchronous(int stringLength){
-        Flux<String> names = Flux.just("Polas","Nime", "Shopon")
+        Flux<String> names = Flux.just("Polas","Naime", "Shopon")
                 .filter(n -> n.length() >= stringLength)
                 .map(String::toUpperCase)
                 .concatMap(this::getSplitWordWithDealy);
 
         return names;
+    }
+
+    public Mono<List<String>> getFlatMapWithMono(int stringLength){
+        Mono<List<String>> charOfName = Mono.just("Polas")
+                .map(String::toUpperCase)
+                .flatMap(this::getMonoSplitWordWithDealy);
+        return charOfName;
+    }
+
+    private Mono<List<String>> getMonoSplitWordWithDealy(String name){
+        String[] splitName = name.split("");
+        return Mono.just(List.of(splitName));
     }
 
 
@@ -135,16 +147,22 @@ public class FluxAndMonoGeneratorService {
 //            }
 //        }).blockLast();
 
-        System.out.println("\nFlux Concat Map with dealy");
-        Flux<String> filterFlatMap = obj.namesFlux_concat_map_filter_Asynchronous(4);
-        filterFlatMap.doOnNext(c->{
-            System.out.println("Char = " + c);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }).blockLast();
+//        System.out.println("\nFlux Concat Map with dealy");
+//        Flux<String> filterFlatMap = obj.namesFlux_concat_map_filter_Asynchronous(4);
+//        filterFlatMap.doOnNext(c->{
+//            System.out.println("Char = " + c);
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).blockLast();
+
+        System.out.println("\nMono Flat Map with dealy");
+        Mono<List<String>> filterFlatMap = obj.getFlatMapWithMono(4);
+        filterFlatMap.subscribe(c->{
+            System.out.println("Name = " + c);
+        });
 
     }
 
